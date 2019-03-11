@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include <pthread.h>
-
+#include <time.h>
 #define MAX_STRING 100
 #define MAX_RW_LENGTH 10000
 #define EXP_TABLE_SIZE 1000
@@ -376,17 +376,17 @@ void LearnMpVocabFromTrainFile() {
 
 void InitNet() {
   long long a, b;
-  a = posix_memalign((void **)&syn0, 128, (long long)vocab_size * layer1_size * sizeof(real));
+  a = __mingw_aligned_malloc((void **)&syn0,  (long long)vocab_size * layer1_size * sizeof(real));
   if (syn0 == NULL) {printf("Memory allocation failed\n"); exit(1);}
   for (b = 0; b < layer1_size; b++) for (a = 0; a < vocab_size; a++)
     syn0[a * layer1_size + b] = (rand() / (real)RAND_MAX - 0.5) / layer1_size;
 
-  a = posix_memalign((void **)&syn1neg, 128, (long long)vocab_size * layer1_size * sizeof(real));
+  a = __mingw_aligned_malloc((void **)&syn1neg,  (long long)vocab_size * layer1_size * sizeof(real));
   if (syn1neg == NULL) {printf("Memory allocation failed\n"); exit(1);}
   for (b = 0; b < layer1_size; b++) for (a = 0; a < vocab_size; a++)
     syn1neg[a * layer1_size + b] = (rand() / (real)RAND_MAX - 0.5) / layer1_size;
 
-  a = posix_memalign((void **)&synmp, 128, (long long)mp_vocab_size * layer1_size * sizeof(real));
+  a = __mingw_aligned_malloc((void **)&synmp, (long long)mp_vocab_size * layer1_size * sizeof(real));
   if (synmp == NULL) {printf("Memory allocation failed\n"); exit(1);}
   for (b = 0; b < layer1_size; b++) for (a = 0; a < mp_vocab_size; a++)
     synmp[a * layer1_size + b] = (rand() / (real)RAND_MAX) / layer1_size;
@@ -591,6 +591,7 @@ void TrainModel() {
   LearnVocabFromTrainFile();
   LearnMpVocabFromTrainFile();
   if (output_file[0] == 0) return;
+
   InitNet();
 
   InitUnigramTable();

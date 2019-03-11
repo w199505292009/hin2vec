@@ -358,7 +358,7 @@ class AvailabeNodeClassOfEdgeClassTest(unittest.TestCase):
             2: ('A', 'C'), #A-C
             3: ('C', 'A'), #C-A
         }
-        self.assertEquals(expected, g.edge_class_id_available_node_class)
+            self.assertEquals(expected, g.edge_class_id_available_node_class)
 
 
 class RandomRemoveEdge(unittest.TestCase):

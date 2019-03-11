@@ -37,7 +37,7 @@ class NodeVocab(object):
         self.node_count = 0
 
     def add_node(self, node_id):
-        self.node2index[node_id] = len(self.nodes)
+        self.node2index[node_id] = len(self.nodes)#self class node_index
         self.nodes.append(Node(node_id))
         self.node_count += 1
 

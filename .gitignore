@@ -2,3 +2,16 @@
 *.swp
 *.swo
 *.swn
+
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.txt
+APwalk.txt
+out
+gen
+*.exe
+model_c/bin
+res

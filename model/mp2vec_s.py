@@ -90,6 +90,7 @@ class MP2Vec(Common):
             input:
                 training_fname:
                     each line: <node_id> <edge_id> ...
+                k_hop_neighbors  图中所有节点的窗口为K的下一跳节点
         '''
         def get_training_size(fname):
             with open(fname, 'r') as f:
@@ -164,6 +165,13 @@ class MP2Vec(Common):
             end = time.time()
         else:
             start = time.time()
+
+            # def train_process(pid, node_vocab, path_vocab, Wx, Wy, Wpath,
+            #                   tables,
+            #                   neg, starting_alpha, win, counter,
+            #                   iterations, training_fname, start_end,
+            #                   same_w, k_hop_neighbors,
+            #                   is_no_circle_path):
             train_process(0, node_vocab, path_vocab,
                           Wx, Wy, Wpath, tables,
                           self.neg, self.alpha,
@@ -378,6 +386,18 @@ class UnigramTable(object):
 #TODO the order of edges of the path
 def get_context(node_index_walk, edge_walk, walk, path_vocab,
                 index, window_size, no_circle=False):
+    '''
+
+    :param node_index_walk:
+    :param edge_walk:
+    :param walk:
+    :param path_vocab:
+    :param index:
+    :param window_size:
+    :param no_circle:
+    :return:  (start_node_index,path(mp),)
+    '''
+    #context 只有下文
     start = max(index - window_size, 0)
     end = min(index + window_size + 1, len(node_index_walk))
     context = []
@@ -480,7 +500,10 @@ def train_process(pid, node_vocab, path_vocab, Wx, Wy, Wpath,
                              if i % 2 == 1]
 
                 for i, x in enumerate(node_index_walk):
-                    #generate positive training data
+                    #x 当前起始节点的index
+                    # generate positive training data
+                    # [(input_y_id,matapath_id,input_y_edge_class_with index),(),......]
+                    # parameter i:  input_x_id
                     for pos_y, path, last_edge_id in get_context(node_index_walk,
                                                     edge_walk,
                                                     walk,
@@ -491,6 +514,7 @@ def train_process(pid, node_vocab, path_vocab, Wx, Wy, Wpath,
 
                         #generate negative training data
                         if k_hop_neighbors is not None:
+
                             negs = table.cleanly_sample(k_hop_neighbors[x], neg)
                         else:
                             negs = table.sample(neg)

@@ -12,6 +12,7 @@ from ds import loader
 __author__ = 'sheep'
 
 
+
 def main(graph_fname, node_vec_fname, path_vec_fname, options):
     '''\
     %prog [options] <graph_fname> <node_vec_fname> <path_vec_fname>
@@ -32,10 +33,14 @@ def main(graph_fname, node_vec_fname, path_vec_fname, options):
         for walk in g.random_walks(options.walk_num, options.walk_length):
             f.write('%s\n' % ' '.join(map(str, walk)))
 
+    with open("unDiAPwalk.txt",'w') as f:
+        for walk in g.random_walks(options.walk_num, options.walk_length):
+            f.write('%s\n' % ' '.join(map(str, walk)))
+
     _, tmp_node_vec_fname = tempfile.mkstemp()
     _, tmp_path_vec_fname = tempfile.mkstemp()
     print 'Learn representations...'
-    statement = ("model_c/bin/hin2vec -size %d -train %s -alpha %f "
+    statement = ("model_c/bin/hin2vec.exe -size %d -train %s -alpha %f "
                  "-output %s -output_mp %s -window %d -negative %d "
                  "-threads %d -no_circle %d -sigmoid_reg %d "
                  "" % (options.dim,
@@ -139,9 +144,20 @@ if __name__ == '__main__':
                             '(Default: binary-step function)'))
     options, args = parser.parse_args()
 
-    if len(args) != 3:
-        parser.print_help()
-        sys.exit()
 
-    sys.exit(main(args[0], args[1], args[2], options))
+    graph_fname = "./res/undirected/A2P_data.txt"
+    # graph_fname = "./res/karate_club_edges.txt"
+    node_vec_fname = "./out/A2P_A2A_nodes.txt"
+    path_vec_fname = "./out/A2P_A2A_matapaths.txt"
+    # if len(args) != 3:
+    #     parser.print_help()
+    #     sys.exit()
+    sys.exit(main(graph_fname, node_vec_fname, path_vec_fname, options))
+
+
+    # if len(args) != 3:
+    #     parser.print_help()
+    #     sys.exit()
+    #
+    # sys.exit(main(args[0], args[1], args[2], options))
 

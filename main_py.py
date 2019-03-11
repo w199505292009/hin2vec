@@ -51,7 +51,9 @@ def main(graph_fname, node_vec_fname, path_vec_fname, options):
     neighbors = None
     if options.correct_neg:
         for id_ in g.graph:
+
             g._get_k_hop_neighborhood(id_, options.window)
+        # g.k_hop_neighbors[window] 图中所有的长度为K的neighbors
         neighbors = g.k_hop_neighbors[options.window]
 
     model.train(g,
@@ -84,6 +86,9 @@ def output_node2vec(g, tmp_node_vec_fname, node_vec_fname):
 
 #FIXME: to support more than 10 different meta-paths
 def output_path2vec(g, tmp_path_vec_fname, path_vec_fname):
+    with open(tmp_path_vec_fname) as fin:
+        with open("./tmp/path_tmp_file.txt") as fout:
+            fout.write(fin.read())
     with open(tmp_path_vec_fname) as f:
         with open(path_vec_fname, 'w') as fo:
             id2edge_class = dict([(v, k) for k, v
@@ -153,9 +158,13 @@ if __name__ == '__main__':
                             '(Default: false)'))
     options, args = parser.parse_args()
 
-    if len(args) != 3:
-        parser.print_help()
-        sys.exit()
+    graph_fname = "./res/directed/A2P_data.txt"
+    # graph_fname = "./res/karate_club_edges.txt"
+    node_vec_fname = "./out/A2P_A2A_nodes.txt"
+    path_vec_fname = "./out/A2P_A2A_matapaths.txt"
 
-    sys.exit(main(args[0], args[1], args[2], options))
+
+
+    sys.exit(main(graph_fname, node_vec_fname, path_vec_fname, options))
+    # sys.exit(main(args[0], args[1], args[2], options))
 
